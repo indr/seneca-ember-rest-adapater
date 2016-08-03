@@ -1,21 +1,14 @@
 const assert = require('chai').assert;
-const simple = require('simple-mock');
 const Common = require('seneca/lib/common');
+const simple = require('simple-mock');
+
+const SenecaMock = require('./unit/SenecaMock');
+
 const Plugin = require('../ember-rest-adapter');
 
 assert.pattern = function (actual, expected) {
   assert.equal(Common.pattern(actual), Common.pattern(expected));
 };
-
-function SenecaMock() {
-  this.act = function (args, done) {
-    done();
-  };
-  this.util = {
-    deepextend: Common.deepextend,
-    pattern: Common.pattern
-  };
-}
 
 describe('Unit | Plugin creation', function () {
   var plugin,
