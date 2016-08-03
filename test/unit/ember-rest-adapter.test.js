@@ -2,9 +2,9 @@ const assert = require('chai').assert;
 const Common = require('seneca/lib/common');
 const simple = require('simple-mock');
 
-const SenecaMock = require('./unit/SenecaMock');
+const SenecaMock = require('./SenecaMock');
 
-const Plugin = require('../ember-rest-adapter');
+const Plugin = require('../../ember-rest-adapter');
 
 assert.pattern = function (actual, expected) {
   assert.equal(Common.pattern(actual), Common.pattern(expected));

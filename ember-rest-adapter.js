@@ -2,6 +2,8 @@
 
 const _ = require('lodash');
 
+const translator = require('./lib/translator');
+
 const plugin = 'ember-rest-adapter';
 
 const default_options = {
@@ -36,6 +38,9 @@ module.exports = function (options) {
       const pattern = 'role:jsonrest-api,method:*';
       console.log('Adding wrapper ' + pattern);
       seneca.wrap(pattern, function (args, done) {
+        const seneca = this;
+        seneca.prior(args, done);
+
         // const seneca = this;
         //
         // console.log('Intercepted ' + args.method + ' ' + args.prefix + '/' + args.kind);
@@ -65,14 +70,7 @@ module.exports = function (options) {
     var pattern = {role: 'jsonrest-api', name: from, kind: from};
     console.log('Adding alias ' + from + ' => ' + to);
     console.log('     pattern', seneca.util.pattern(pattern));
-    seneca.add(pattern, function (args, done) {
-      // const seneca = this;
-      //
-      // console.log('Translating ' + args.prefix + '/' + from + ' => ' + args.prefix + '/' + to);
-      // args.name = to;
-      //
-      // seneca.act(args, done);
-    });
+    seneca.add(pattern, translator(to));
   }
 
   // function _serialize(done, kind) {

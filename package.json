@@ -4,7 +4,7 @@
   "description": "A Seneca plugin to wrap seneca-jsonrest-api for Embers rest adapter",
   "main": "ember-rest-adapter.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha 'test/**/*.js'"
   },
   "repository": {
     "type": "git",
