@@ -1,0 +1,42 @@
+{
+  "name": "seneca-ember-rest-adapter",
+  "version": "0.0.0",
+  "description": "A Seneca plugin to wrap seneca-jsonrest-api for Embers rest adapter",
+  "main": "ember-rest-adapter.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/indr/seneca-ember-rest-adapter.git"
+  },
+  "keywords": [
+    "api",
+    "ember",
+    "emberjs",
+    "json",
+    "seneca",
+    "senecajs",
+    "rest",
+    "seneca-jsonrest-api"
+  ],
+  "author": "Reto Inderbitzin (https://github.com/indr)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/indr/seneca-ember-rest-adapter/issues"
+  },
+  "homepage": "https://github.com/indr/seneca-ember-rest-adapter#readme",
+  "dependencies": {
+    "lodash": "^4.14.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "express": "^4.14.0",
+    "mocha": "^3.0.0",
+    "seneca": "^2.1.0",
+    "seneca-entity": "^1.2.0",
+    "seneca-jsonrest-api": "^0.3.1",
+    "simple-mock": "^0.7.0",
+    "supertest": "^2.0.0"
+  }
+}
