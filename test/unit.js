@@ -1,15 +1,20 @@
 const assert = require('chai').assert;
 const simple = require('simple-mock');
 const Common = require('seneca/lib/common');
-
 const Plugin = require('../ember-rest-adapter');
 
+assert.pattern = function (actual, expected) {
+  assert.equal(Common.pattern(actual), Common.pattern(expected));
+};
+
 function SenecaMock() {
-  this.util = {
-    deepextend: Common.deepextend
+  this.act = function (args, done) {
+    done();
   };
-  this.ready = function () {
-  }
+  this.util = {
+    deepextend: Common.deepextend,
+    pattern: Common.pattern
+  };
 }
 
 describe('Unit | Plugin creation', function () {
@@ -44,20 +49,103 @@ describe('Unit | Plugin creation', function () {
 describe('Unit | Plugin initialization', function () {
   var plugin,
     seneca = new SenecaMock(),
-    init;
+    init, add, ready, wrap;
 
   before(function (done) {
     add = simple.mock(seneca, 'add');
+    ready = simple.mock(seneca, 'ready');
+    wrap = simple.mock(seneca, 'wrap');
     done();
   });
 
   beforeEach(function (done) {
-    plugin = Plugin.call(seneca);
-    init = add.calls[0].args[1];
+    add.reset();
     done();
   });
 
+  function createSut(options) {
+    plugin = Plugin.call(seneca, options);
+    init = add.calls[0].args[1];
+    add.reset();
+  }
+
   it('should call callback', function (done) {
+    createSut();
     init.call(seneca, {}, done);
+  });
+
+  it('should add wrapper when seneca is ready', function (done) {
+    createSut();
+    init.call(seneca, {}, function () {
+      ready.lastCall.args[0].call(seneca, null);
+      assert(wrap.called);
+      assert.pattern(wrap.lastCall.args[0], 'role:jsonrest-api,method:*');
+      assert.isFunction(wrap.lastCall.args[1]);
+      done();
+    });
+  });
+
+  describe('Aliases', function () {
+    it('adds an alias', function (done) {
+      const options = {
+        alias: {
+          'foo': 'foos'
+        }
+      };
+      createSut(options);
+      init.call(seneca, {}, function() {
+        assert.pattern(add.lastCall.args[0], 'kind:foos,name:foos,role:jsonrest-api');
+        assert.isFunction(add.lastCall.args[1]);
+        done();
+      });
+    });
+
+    it('adds an array alias', function (done) {
+      const options = {
+        alias: {
+          'foo': ['foos', 'bars']
+        }
+      };
+      createSut(options);
+      init.call(seneca, {}, function() {
+        assert.pattern(add.calls[0].args[0], 'kind:foos,name:foos,role:jsonrest-api');
+        assert.isFunction(add.calls[0].args[1]);
+        assert.pattern(add.calls[1].args[0], 'kind:bars,name:bars,role:jsonrest-api');
+        assert.isFunction(add.calls[1].args[1]);
+        done();
+      });
+    });
+
+    it('adds multiple aliases', function (done) {
+      const options = {
+        alias: {
+          'foo': 'foos',
+          'bar': ['bars', 'cars']
+        }
+      };
+      createSut(options);
+      init.call(seneca, {}, function() {
+        assert.pattern(add.calls[1].args[0], 'kind:bars,name:bars,role:jsonrest-api');
+        assert.isFunction(add.calls[1].args[1]);
+        assert.pattern(add.calls[2].args[0], 'kind:cars,name:cars,role:jsonrest-api');
+        assert.isFunction(add.calls[2].args[1]);
+        assert.pattern(add.calls[0].args[0], 'kind:foos,name:foos,role:jsonrest-api');
+        assert.isFunction(add.calls[0].args[1]);
+        done();
+      });
+    });
+
+    it('does not add an alias with same name', function (done) {
+      const options = {
+        alias: {
+          'foo': 'foo'
+        }
+      };
+      createSut(options);
+      init.call(seneca, {}, function() {
+        assert.equal(add.callCount, 0);
+        done();
+      });
+    });
   });
 });

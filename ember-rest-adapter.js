@@ -5,16 +5,13 @@ const _ = require('lodash');
 const plugin = 'ember-rest-adapter';
 
 const default_options = {
-
+  alias: {}
 };
 
 module.exports = function (options) {
   const seneca = this;
 
   options = seneca.util.deepextend(default_options, options);
-
-  // options.alias = options.alias || [];
-  // options.alias['contact'] = ['contacts', 'foos'];
 
   seneca.add({init: plugin}, init_plugin);
 
@@ -33,52 +30,51 @@ module.exports = function (options) {
       });
     }
 
-
     seneca.ready(function (err) {
       if (err) return;
 
       const pattern = 'role:jsonrest-api,method:*';
       console.log('Adding wrapper ' + pattern);
-      var res = seneca.wrap(pattern, function (args, done) {
-        const seneca = this;
-
-        console.log('Intercepted ' + args.method + ' ' + args.prefix + '/' + args.kind);
-
-        if (args.method !== 'get') {
-          console.log('Normalizing ' + args.method + ' for name ' + args.name + ' / kind ' + args.kind);
-
-          if (args.data && Object.keys(args.data).length === 1 && args.data.hasOwnProperty(args.name)) {
-            console.log('Unwrapping root object ' + args.name);
-            args.data = args.data[args.name]
-          }
-        }
-
-        seneca.prior(args, _serialize(done, args.kind));
+      seneca.wrap(pattern, function (args, done) {
+        // const seneca = this;
+        //
+        // console.log('Intercepted ' + args.method + ' ' + args.prefix + '/' + args.kind);
+        //
+        // if (args.method !== 'get') {
+        //   console.log('Normalizing ' + args.method + ' for name ' + args.name + ' / kind ' + args.kind);
+        //
+        //   if (args.data && Object.keys(args.data).length === 1 && args.data.hasOwnProperty(args.name)) {
+        //     console.log('Unwrapping root object ' + args.name);
+        //     args.data = args.data[args.name]
+        //   }
+        // }
+        //
+        // seneca.prior(args, _serialize(done, args.kind));
       });
     });
 
     done();
   }
 
-  // function _addAlias(seneca, from, to) {
-  //   if (to === from) {
-  //     console.log('Ignoring alias ' + from + ' => ' + to);
-  //     return;
-  //   }
-  //
-  //   var pattern = {role: 'jsonrest-api', name: from, kind: from};
-  //   console.log('Adding alias ' + from + ' => ' + to);
-  //   console.log('     pattern', seneca.util.pattern(pattern));
-  //   seneca.add(pattern, function (args, done) {
-  //     const seneca = this;
-  //
-  //     console.log('Translating ' + args.prefix + '/' + from + ' => ' + args.prefix + '/' + to);
-  //     args.name = to;
-  //
-  //     seneca.act(args, done);
-  //   });
-  // }
-  //
+  function _addAlias(seneca, from, to) {
+    if (to === from) {
+      console.log('Ignoring alias ' + from + ' => ' + to);
+      return;
+    }
+
+    var pattern = {role: 'jsonrest-api', name: from, kind: from};
+    console.log('Adding alias ' + from + ' => ' + to);
+    console.log('     pattern', seneca.util.pattern(pattern));
+    seneca.add(pattern, function (args, done) {
+      // const seneca = this;
+      //
+      // console.log('Translating ' + args.prefix + '/' + from + ' => ' + args.prefix + '/' + to);
+      // args.name = to;
+      //
+      // seneca.act(args, done);
+    });
+  }
+
   // function _serialize(done, kind) {
   //   return function (err, result) {
   //     if (err) return done(err, result);
