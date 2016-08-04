@@ -31,7 +31,7 @@ describe('Unit | serializer', function () {
       assert.isNull(err);
       assert.equal(Object.keys(result).length, 1);
       assert(_.isArray(result['foos']));
-      assert.equal(result['foos'], data);
+      assert.deepEqual(result['foos'], data);
       done();
     }, 'foos');
 
@@ -43,7 +43,31 @@ describe('Unit | serializer', function () {
     sut = serializer(function (err, result) {
       assert.isNull(err);
       assert.equal(Object.keys(result).length, 1);
-      assert.equal(result['foos'], data);
+      assert.deepEqual(result['foos'], data);
+      done();
+    }, 'foos');
+
+    sut(null, data);
+  });
+
+  it('cleans properties with $ from array result', function (done) {
+    const data = [{a: 'foo1', a$: 'foo1$'}];
+    sut = serializer(function (err, result) {
+      assert.isNull(err);
+      assert.equal(Object.keys(result).length, 1);
+      assert.isFalse(result['foos'][0].hasOwnProperty('a$'));
+      done();
+    }, 'foos');
+
+    sut(null, data);
+  });
+
+  it('cleans properties with $ from object result', function (done) {
+    const data = {a: 'foo1', a$: 'foo1$'};
+    sut = serializer(function (err, result) {
+      assert.isNull(err);
+      assert.equal(Object.keys(result).length, 1);
+      assert.isFalse(result['foos'].hasOwnProperty('a$'));
       done();
     }, 'foos');
 
