@@ -7,8 +7,8 @@
 [![dependencies Status](https://david-dm.org/indr/seneca-ember-rest-adapter/status.svg)](https://david-dm.org/indr/seneca-ember-rest-adapter)
 [![Code Climate](https://codeclimate.com/github/indr/seneca-ember-rest-adapter/badges/gpa.svg)](https://codeclimate.com/github/indr/seneca-ember-rest-adapter)
 
-This [seneca](senecajs/seneca) plugin provides a wrapper for
-the [jsonrest-api](rjrodgers/seneca-jsonrest-api) plugin to talk fluently with Ember.js'
+This [seneca](https://github.com/senecajs/seneca) plugin provides a wrapper for
+the [jsonrest-api](https://github.com/rjrodger/seneca-jsonrest-api) plugin to talk fluently with Ember.js'
 [DS.RESTAdapter](http://emberjs.com/api/data/classes/DS.RESTAdapter.html). It provides two features:
 
  * A configurable plural form of the endpoint, e.g. /api/foos
