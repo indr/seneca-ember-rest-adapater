@@ -28,7 +28,7 @@ describe('Unit | serializer', function () {
   it('wraps array into root object', function (done) {
     const data = [{a: 'foo1'}, {a: 'foo2'}];
     sut = serializer(function (err, result) {
-      assert(!err);
+      assert.isNull(err);
       assert.equal(Object.keys(result).length, 1);
       assert(_.isArray(result['foos']));
       assert.equal(result['foos'], data);
@@ -41,7 +41,7 @@ describe('Unit | serializer', function () {
   it('wraps object into root object', function (done) {
     const data = {a: 'foo1'};
     sut = serializer(function (err, result) {
-      assert(!err);
+      assert.isNull(err);
       assert.equal(Object.keys(result).length, 1);
       assert.equal(result['foos'], data);
       done();

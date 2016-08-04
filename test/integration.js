@@ -30,8 +30,6 @@ describe('Integration', function () {
 
       .error(assert)
       .ready(function (err) {
-        assert(!err);
-
         seneca.make$('foo', {a: 'foo1'}).save$(function (err, entity) {
           id1 = entity.id;
         });
@@ -63,7 +61,7 @@ describe('Integration', function () {
   it('GET /foo | returns root object \'foo\' as array', function (done) {
     const msg = getMessage('foo');
     seneca.act(msg, function (err, result) {
-      assert(!err);
+      assert.isNull(err);
       assert.equal(Object.keys(result).length, 1);
       const data = result['foo'];
       assert.equal(data.length, 2);
@@ -76,7 +74,7 @@ describe('Integration', function () {
   it('GET /foos | translates from foos to foo and returns root object \'foos\' as array', function (done) {
     const msg = getMessage('foos');
     seneca.act(msg, function (err, result) {
-      assert(!err);
+      assert.isNull(err);
       assert.equal(Object.keys(result).length, 1);
       const data = result['foos'];
       assert.equal(data.length, 2);
@@ -90,7 +88,7 @@ describe('Integration', function () {
     const msg = getMessage('foo');
     msg.id = id1;
     seneca.act(msg, function (err, result) {
-      assert(!err);
+      assert.isNull(err);
       assert.equal(Object.keys(result).length, 1);
       const data = result['foo'];
       assert.equal(data.id, id1);
@@ -103,7 +101,7 @@ describe('Integration', function () {
     const msg = getMessage('foos');
     msg.id = id1;
     seneca.act(msg, function (err, result) {
-      assert(!err);
+      assert.isNull(err);
       assert.equal(Object.keys(result).length, 1);
       const data = result['foos'];
       assert.equal(data.id, id1);
@@ -120,7 +118,7 @@ describe('Integration', function () {
       }
     };
     seneca.act(msg, function (err, result) {
-      assert(!err);
+      assert.isNull(err);
       console.log(result);
       const foo = result['foo'];
       assert(foo);
@@ -138,7 +136,7 @@ describe('Integration', function () {
       }
     };
     seneca.act(msg, function (err, result) {
-      assert(!err);
+      assert.isNull(err);
       console.log(result);
       const foo = result['foos'];
       assert(foo);

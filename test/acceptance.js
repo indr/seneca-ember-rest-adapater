@@ -31,15 +31,8 @@ describe('Acceptance', function () {
       .add('role:api,route:ping', function (args, done) {
         done(null, {ok: true});
       })
-      .error(function (err) {
-        console.log('ERROR', err);
-        assert(err);
-      })
+      .error(assert)
       .ready(function (err) {
-        assert(!err);
-
-
-
         seneca.act('role:web', {
           use: {
             prefix: '/',
@@ -67,7 +60,7 @@ describe('Acceptance', function () {
     agent.get('/ping')
       .expect(200)
       .end(function (err, res) {
-        assert(!err);
+        assert.isNull(err);
         assert.equal(res.body.ok, true);
         done();
       })

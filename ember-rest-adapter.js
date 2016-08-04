@@ -30,9 +30,7 @@ module.exports = function (options) {
 
     createAliases(options.alias);
 
-    seneca.ready(function (err) {
-      if (err) return;
-
+    seneca.ready(function () {
       const pattern = 'role:jsonrest-api,method:*';
       console.log('Adding wrapper for ' + pattern);
       seneca.wrap(pattern, adapter);
