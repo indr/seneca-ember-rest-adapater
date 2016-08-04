@@ -5,30 +5,38 @@ describe('Integration', function () {
   var seneca,
     id1, id2;
 
+  const options = {
+    'jsonrest-api': {
+      pin: {
+        name: 'foo'
+      },
+      prefix: '/a/b'
+    },
+    'ember-rest-adapter': {
+      alias: {
+        'foo': 'foos'
+      }
+    }
+  };
+
   before(function (done) {
     seneca = Seneca()
       .use('entity')
-      .use('jsonrest-api', {
-        pin: {
-          name: 'foo'
-        },
-        prefix: '/a/b'
-      })
-      .use('../ember-rest-adapter', {
-        alias: {
-          'foo': 'foos'
-        }
-      })
+      // IMPLICIT TEST: use ember-rest-adapter before jsonrest-api to verify
+      //                arbitrary usage order
+      .use('../ember-rest-adapter', options['ember-rest-adapter'])
+      .use('jsonrest-api', options['jsonrest-api'])
+
       .error(assert)
       .ready(function (err) {
         assert(!err);
 
         // I don't know why I have to call this manually...
         seneca.act('init:ember-rest-adapter', function (err, result) {
-          seneca.make$('foo', {a:'foo1'}).save$(function (err, entity) {
+          seneca.make$('foo', {a: 'foo1'}).save$(function (err, entity) {
             id1 = entity.id;
           });
-          seneca.make$('foo', {a:'foo2'}).save$(function (err, entity) {
+          seneca.make$('foo', {a: 'foo2'}).save$(function (err, entity) {
             id2 = entity.id;
           });
           done();
