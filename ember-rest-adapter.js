@@ -2,8 +2,9 @@
 
 const _ = require('lodash');
 
-const translator = require('./lib/translator');
+const normalize = require('./lib/normalize');
 const serializer = require('./lib/serializer');
+const translator = require('./lib/translator');
 
 const plugin = 'ember-rest-adapter';
 
@@ -40,22 +41,11 @@ module.exports = function (options) {
       console.log('Adding wrapper ' + pattern);
       seneca.wrap(pattern, function (args, done) {
         const seneca = this;
-        seneca.prior(args, serializer(done, args.kind));
 
-        // const seneca = this;
-        //
-        // console.log('Intercepted ' + args.method + ' ' + args.prefix + '/' + args.kind);
-        //
-        // if (args.method !== 'get') {
-        //   console.log('Normalizing ' + args.method + ' for name ' + args.name + ' / kind ' + args.kind);
-        //
-        //   if (args.data && Object.keys(args.data).length === 1 && args.data.hasOwnProperty(args.name)) {
-        //     console.log('Unwrapping root object ' + args.name);
-        //     args.data = args.data[args.name]
-        //   }
-        // }
-        //
-        // seneca.prior(args, _serialize(done, args.kind));
+        console.log('Intercepted ' + args.method + ' ' + args.prefix + '/' + args.kind);
+        normalize(args);
+
+        seneca.prior(args, serializer(done, args.kind));
       });
     });
 
