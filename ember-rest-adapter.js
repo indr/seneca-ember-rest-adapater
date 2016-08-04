@@ -2,8 +2,7 @@
 
 const _ = require('lodash');
 
-const normalize = require('./lib/normalize');
-const serializer = require('./lib/serializer');
+const adapter = require('./lib/adapter');
 const translator = require('./lib/translator');
 
 const plugin = 'ember-rest-adapter';
@@ -23,36 +22,33 @@ module.exports = function (options) {
     console.log('Initializing plugin ' + plugin);
     const seneca = this;
 
-    for (const to in options.alias) {
-      if (!options.alias.hasOwnProperty(to))
-        continue;
-
-      const from = _.isArray(options.alias[to]) ? options.alias[to] : [options.alias[to]];
-
-      from.forEach(function (eachFrom) {
-        _addAlias(seneca, eachFrom, to);
-      });
-    }
+    createAliases(options.alias);
 
     seneca.ready(function (err) {
       if (err) return;
 
       const pattern = 'role:jsonrest-api,method:*';
-      console.log('Adding wrapper ' + pattern);
-      seneca.wrap(pattern, function (args, done) {
-        const seneca = this;
-
-        console.log('Intercepted ' + args.method + ' ' + args.prefix + '/' + args.kind);
-        normalize(args);
-
-        seneca.prior(args, serializer(done, args.kind));
-      });
+      console.log('Adding wrapper for ' + pattern);
+      seneca.wrap(pattern, adapter);
     });
 
     done();
   }
 
-  function _addAlias(seneca, from, to) {
+  function createAliases(aliases) {
+    for (const to in aliases) {
+      if (!aliases.hasOwnProperty(to))
+        continue;
+
+      const from = _.isArray(aliases[to]) ? aliases[to] : [aliases[to]];
+
+      from.forEach(function (eachFrom) {
+        createAlias(seneca, eachFrom, to);
+      });
+    }
+  }
+
+  function createAlias(seneca, from, to) {
     if (to === from) {
       console.log('Ignoring alias ' + from + ' => ' + to);
       return;
