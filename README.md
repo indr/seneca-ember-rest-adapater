@@ -34,7 +34,7 @@ const seneca = require('seneca')()
     alias: {'foo': 'foos'}
   });
   
-express = require('express')()
+const express = require('express')()
   .use(require('body-parser').json())
   .use(seneca.export('web'))
   .listen(3000);

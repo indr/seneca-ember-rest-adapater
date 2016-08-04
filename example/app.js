@@ -12,7 +12,7 @@ const seneca = require('seneca')()
   // See https://github.com/senecajs/seneca/issues/463
   .act('init:ember-rest-adapter');
 
-express = require('express')()
+const express = require('express')()
   .use(require('body-parser').json())
   .use(seneca.export('web'))
   .listen(3000);
