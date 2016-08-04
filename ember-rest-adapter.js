@@ -22,7 +22,7 @@ module.exports = function (options) {
 
   function init_plugin(args, done) {
     if (initCalled) {
-      new Error('Init of ember-rest-adapter already called!');
+      new Error('Init of ember-rest-adapter already called!\nSee https://github.com/senecajs/seneca/issues/463');
     }
     initCalled = true;
     console.log('Initializing plugin ' + plugin);

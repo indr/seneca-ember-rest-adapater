@@ -28,6 +28,7 @@ describe('Acceptance', function () {
       .use('web')
       .use('jsonrest-api', options['jsonrest-api'])
       .use('../ember-rest-adapter', options['ember-rest-adapter'])
+      .act('init:ember-rest-adapter') // Bug: https://github.com/senecajs/seneca/issues/463
       .add('role:api,route:ping', function (args, done) {
         done(null, {ok: true});
       })
@@ -46,9 +47,7 @@ describe('Acceptance', function () {
           .use(seneca.export('web'));
 
         agent = Request(express);
-
-        // TODO: Why do I have to call this manually?
-        seneca.act('init:ember-rest-adapter', done);
+        done();
       });
   });
 
