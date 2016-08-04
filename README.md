@@ -8,8 +8,11 @@
 [![Code Climate](https://codeclimate.com/github/indr/seneca-ember-rest-adapter/badges/gpa.svg)](https://codeclimate.com/github/indr/seneca-ember-rest-adapter)
 
 This [seneca](senecajs/seneca) plugin provides a wrapper for
-the [jsonrest-api](rjrodgers/seneca-jsonrest-api) plugin to talk fluently with Ember.js
-[DS.RESTAdapter](http://emberjs.com/api/data/classes/DS.RESTAdapter.html).
+the [jsonrest-api](rjrodgers/seneca-jsonrest-api) plugin to talk fluently with Ember.js'
+[DS.RESTAdapter](http://emberjs.com/api/data/classes/DS.RESTAdapter.html). It provides two features:
+
+ * A configurable plural form of the endpoint, e.g. /api/foos
+ * Wrapping and unwrapping of the payloads object root
 
 ## Installation
 
@@ -17,7 +20,7 @@ the [jsonrest-api](rjrodgers/seneca-jsonrest-api) plugin to talk fluently with E
 npm install seneca-ember-rest-adapter
 ```
 
-## Usage
+## Example
 
 ```js
 const seneca = require('seneca')()
@@ -45,6 +48,31 @@ $ curl -X POST http://localhost:3000/api/foos -H 'Content-Type: application/json
 {"foos":{"name":"foo2","id":"dip1d0"}}
 $ curl -X GET http://localhost:3000/api/foos
 {"foos":[{"name":"foo1","id":"880i2f"},{"name":"foo2","id":"dip1d0"}]}
+$ curl -X GET http://localhost:3000/api/foos/dip1d0
+{"foos":{"name":"foo2","id":"dip1d0"}}
+```
+
+You can find this example in the example directory and run it:
+
+```bash
+node example/app.js
+```
+
+## Notes
+
+As you can see in the example above, the plugin returns the plural form
+(the alias) for `GET` requests. This is according to the
+[object root documentation](http://emberjs.com/api/data/classes/DS.RESTAdapter.html#toc_object-root)
+of DS.RESTAdapter totally acceptable:
+
+> Note that the object root can be pluralized for both a single-object response and an array response: the REST adapter is not strict on this. 
+
+## Test
+
+To run tests, simply use npm:
+
+```bash
+npm test
 ```
 
 ## License
