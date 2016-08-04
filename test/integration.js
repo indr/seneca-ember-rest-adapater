@@ -22,6 +22,7 @@ describe('Integration', function () {
   before(function (done) {
     seneca = Seneca()
       .use('entity')
+      .use('web')
       // IMPLICIT TEST: use ember-rest-adapter before jsonrest-api to verify
       //                arbitrary usage order
       .use('../ember-rest-adapter', options['ember-rest-adapter'])
@@ -31,16 +32,15 @@ describe('Integration', function () {
       .ready(function (err) {
         assert(!err);
 
-        // I don't know why I have to call this manually...
-        seneca.act('init:ember-rest-adapter', function (err, result) {
-          seneca.make$('foo', {a: 'foo1'}).save$(function (err, entity) {
-            id1 = entity.id;
-          });
-          seneca.make$('foo', {a: 'foo2'}).save$(function (err, entity) {
-            id2 = entity.id;
-          });
-          done();
+        seneca.make$('foo', {a: 'foo1'}).save$(function (err, entity) {
+          id1 = entity.id;
         });
+        seneca.make$('foo', {a: 'foo2'}).save$(function (err, entity) {
+          id2 = entity.id;
+        });
+
+        // TODO: I don't know why I have to call this manually?
+        seneca.act('init:ember-rest-adapter', done());
       });
   });
 

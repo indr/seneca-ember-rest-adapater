@@ -11,6 +11,8 @@ const default_options = {
   alias: {}
 };
 
+var initCalled = false;
+
 module.exports = function (options) {
   const seneca = this;
 
@@ -19,6 +21,10 @@ module.exports = function (options) {
   seneca.add({init: plugin}, init_plugin);
 
   function init_plugin(args, done) {
+    if (initCalled) {
+      new Error('Init of ember-rest-adapter already called!');
+    }
+    initCalled = true;
     console.log('Initializing plugin ' + plugin);
     const seneca = this;
 
