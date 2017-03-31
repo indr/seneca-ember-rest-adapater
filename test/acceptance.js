@@ -10,9 +10,7 @@ describe('Acceptance', function () {
 
   const options = {
     'jsonrest-api': {
-      pin: {
-        name: 'foo'
-      },
+      pin: [{name: 'foo'}, {name: 'news'}],
       prefix: '/api'
     },
     'ember-rest-adapter': {
@@ -65,13 +63,39 @@ describe('Acceptance', function () {
       })
   });
 
-  it('GET /api/foos', function (done) {
-    agent.get('/api/foos')
-      .expect(200)
-      .end(function (err, res) {
-        assert.isNull(err);
-        assert.deepEqual(res.body, {foos: []});
-        done();
-      })
+  describe('/api/foos', function () {
+    it('GET /api/foos', function (done) {
+      agent.get('/api/foos')
+        .expect(200)
+        .end(function (err, res) {
+          assert.isNull(err);
+          assert.deepEqual(res.body, {foos: []});
+          done();
+        })
+    });
+  });
+
+  describe('api/news', function () {
+    it("GET /api/news should have root 'news' with empty array", function (done) {
+      agent.get('/api/news')
+        .expect(200)
+        .end(function (err, res) {
+          assert.isNull(err);
+          assert.deepEqual(res.body, {'news': []});
+          done();
+        })
+    });
+
+    it("POST /api/news should return 'news' object", function (done) {
+      agent.post('/api/news')
+        .send({'title': 'Title 1'})
+        .expect(200)
+        .end(function (err, res) {
+          console.log(err, res);
+          assert.isNull(err);
+          assert.equal(res.body.news.title, 'Title 1');
+          done();
+        });
+    });
   });
 });

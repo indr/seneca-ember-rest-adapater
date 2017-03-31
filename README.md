@@ -55,7 +55,6 @@ $ curl -X GET http://localhost:3000/api/foos/dip1d0
 You can find this example in the example directory and run it:
 
 ```bash
-cd node_modules/seneca-ember-rest-adapter/ && npm install
 node example/app.js
 ```
 
